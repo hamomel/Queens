@@ -1,4 +1,4 @@
-package com.hamomel.queens.game
+package com.hamomel.queens.game.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,18 +8,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.hamomel.queens.game.data.Board
 import com.hamomel.queens.ui.theme.QueensTheme
 
 @Composable
-fun QueensGameScreen() {
+fun QueensGameScreen(
+    board: Board
+) {
     Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Board(
-                boardSize = 8,
+            BoardWidget(
+                board= board,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
@@ -30,6 +33,6 @@ fun QueensGameScreen() {
 @Preview
 private fun QueensGamePreview() {
     QueensTheme {
-        QueensGameScreen()
+        QueensGameScreen(Board(8))
     }
 }
