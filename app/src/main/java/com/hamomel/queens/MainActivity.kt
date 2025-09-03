@@ -6,9 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.hamomel.queens.game.data.BlackQueen
-import com.hamomel.queens.game.data.Board
-import com.hamomel.queens.game.data.WhiteQueen
 import com.hamomel.queens.game.ui.QueensGameScreen
 import com.hamomel.queens.ui.theme.QueensTheme
 
@@ -21,14 +18,9 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
 
-        val board = Board(8)
-        board.setPiece(WhiteQueen, 2, 2)
-        board.setPiece(BlackQueen, 5, 2)
-
-
         setContent {
             QueensTheme {
-                QueensGameScreen(board)
+                QueensGameScreen(8)
             }
         }
     }

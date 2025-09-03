@@ -1,7 +1,8 @@
-package com.hamomel.queens.game.ui
+package com.hamomel.queens.ui.widgets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -11,9 +12,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,16 +30,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.hamomel.queens.game.data.BlackQueen
-import com.hamomel.queens.game.data.Board
-import com.hamomel.queens.game.data.WhiteQueen
+import com.hamomel.queens.data.BlackQueen
+import com.hamomel.queens.data.Board
+import com.hamomel.queens.data.Position
+import com.hamomel.queens.data.WhiteQueen
 import com.hamomel.queens.ui.theme.LocalCustomColors
 import com.hamomel.queens.ui.theme.QueensTheme
 
 @Composable
 fun BoardWidget(
     board: Board,
-    modifier: Modifier
+    modifier: Modifier,
+    onSquareClick: (Position) -> Unit
 ) {
     BoxWithConstraints(
         modifier = modifier.aspectRatio(1f)
@@ -43,10 +50,11 @@ fun BoardWidget(
 
         Column {
             repeat(board.size) { rowIndex ->
-                val rowNumber = board.size - rowIndex - 1 // start  rows count from 0, for better compatibility
+                val rowNumber =
+                    board.size - rowIndex - 1 // start  rows count from 0, for better compatibility
                 Row {
                     repeat(board.size) { columnNumber ->
-                        Square(rowNumber, columnNumber, squareSize, board)
+                        Square(rowNumber, columnNumber, squareSize, board, onSquareClick)
                     }
                 }
             }
@@ -54,12 +62,14 @@ fun BoardWidget(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Square(
     rowNumber: Int,
     columnNumber: Int,
     squareSize: Dp,
-    board: Board
+    board: Board,
+    onClick: (Position) -> Unit = { _ -> }
 ) {
     val isWhite = (rowNumber + columnNumber) % 2 == 1
     val squareColor = if (isWhite) {
@@ -74,34 +84,45 @@ private fun Square(
         LocalCustomColors.current.whiteSquare
     }
 
-    Box(
-        modifier = Modifier.Companion
-            .size(squareSize)
-            .background(squareColor)
+    CompositionLocalProvider(
+        LocalRippleConfiguration provides createSquareRippleConfiguration(labelColor)
     ) {
-        if (columnNumber == 0) {
-            val label = (rowNumber + 1).toString()
-            SquareLabel(label, labelColor, Alignment.Companion.TopStart)
-        }
-        if (rowNumber == 0) {
-            val label = (Char(97) + columnNumber).toString() // 97 = 'a'
-            SquareLabel(label, labelColor, Alignment.Companion.BottomEnd)
-        }
+        Box(
+            modifier = Modifier.Companion
+                .size(squareSize)
+                .background(squareColor)
+                .clickable { onClick(Position(rowNumber, columnNumber)) },
+        ) {
+            if (columnNumber == 0) {
+                val label = (rowNumber + 1).toString()
+                SquareLabel(label, labelColor, Alignment.Companion.TopStart)
+            }
+            if (rowNumber == 0) {
+                val label = (Char(97) + columnNumber).toString() // 97 = 'a'
+                SquareLabel(label, labelColor, Alignment.Companion.BottomEnd)
+            }
 
-        val piece = board.getPiece(rowNumber, columnNumber)
+            val piece = board.getPiece(Position(rowNumber, columnNumber))
 
-        piece?.let { piece ->
-            Image(
-                painter = painterResource(piece.iconRes),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .fillMaxSize()
-                    .padding(squareSize * 0.1f),
-            )
+            piece?.let { piece ->
+                Image(
+                    painter = painterResource(piece.iconRes),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxSize()
+                        .padding(squareSize * 0.1f),
+                )
+            }
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun createSquareRippleConfiguration(color: Color) =
+    RippleConfiguration(
+        color = color,
+    )
 
 @Composable
 private fun BoxScope.SquareLabel(
@@ -130,12 +151,12 @@ private fun BoxScope.SquareLabel(
 @Composable
 private fun BoardPreview() {
     val board = Board(6)
-    board.setPiece(WhiteQueen, 0, 0)
-    board.setPiece(BlackQueen, 5, 0)
-    board.setPiece(WhiteQueen, 2, 5)
-    board.setPiece(BlackQueen, 5, 5)
+    board.setPiece(WhiteQueen, Position(0, 0))
+    board.setPiece(BlackQueen, Position(5, 0))
+    board.setPiece(WhiteQueen, Position(2, 5))
+    board.setPiece(BlackQueen, Position(5, 5))
 
     QueensTheme {
-        BoardWidget(board = board, modifier = Modifier)
+        BoardWidget(board = board, modifier = Modifier, {})
     }
 }

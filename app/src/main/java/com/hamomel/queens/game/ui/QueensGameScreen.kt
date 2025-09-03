@@ -5,15 +5,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.hamomel.queens.game.data.Board
+import com.hamomel.queens.data.Board
+import com.hamomel.queens.data.Position
 import com.hamomel.queens.ui.theme.QueensTheme
+import com.hamomel.queens.ui.widgets.BoardWidget
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun QueensGameScreen(
-    board: Board
+    boardSize: Int
+) {
+    val viewModel = koinViewModel<QueensGameViewModel> { parametersOf(boardSize) }
+    val viewState by viewModel.viewState.collectAsState()
+
+    QueensGameContent(
+        state = viewState,
+        onSquareClick = viewModel::onSquareClick
+    )
+}
+
+@Composable
+private fun QueensGameContent(
+    state: QueensGameViewState,
+    onSquareClick: (Position) -> Unit
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -22,8 +42,9 @@ fun QueensGameScreen(
                 .padding(paddingValues)
         ) {
             BoardWidget(
-                board= board,
-                modifier = Modifier.align(Alignment.Center)
+                board = state.board,
+                modifier = Modifier.align(Alignment.Center),
+                onSquareClick = onSquareClick
             )
         }
     }
@@ -33,6 +54,6 @@ fun QueensGameScreen(
 @Preview
 private fun QueensGamePreview() {
     QueensTheme {
-        QueensGameScreen(Board(8))
+        QueensGameContent(QueensGameViewState(board = Board(8)), {})
     }
 }
