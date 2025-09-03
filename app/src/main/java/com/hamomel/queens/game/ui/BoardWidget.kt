@@ -1,6 +1,5 @@
 package com.hamomel.queens.game.ui
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +8,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -18,11 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import com.hamomel.queens.game.data.BlackQueen
 import com.hamomel.queens.game.data.Board
 import com.hamomel.queens.game.data.WhiteQueen
@@ -37,26 +39,14 @@ fun BoardWidget(
     BoxWithConstraints(
         modifier = modifier.aspectRatio(1f)
     ) {
-
-        val isPortrait =
-            LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-
-        val squareSize = if (isPortrait) {
-            this.maxWidth / board.size
-        } else {
-            this.maxHeight / board.size
-        }
+        val squareSize = this.maxWidth / board.size
 
         Column {
             repeat(board.size) { rowIndex ->
-                val rowNumber =
-                    board.size - rowIndex - 1 // start  rows count from 0, for better compatibility
-                Row(
-                    modifier = Modifier.Companion
-                        .height(squareSize)
-                ) {
-                    repeat(board.size) { columnIndex ->
-                        Square(rowNumber, columnIndex, squareSize, board)
+                val rowNumber = board.size - rowIndex - 1 // start  rows count from 0, for better compatibility
+                Row {
+                    repeat(board.size) { columnNumber ->
+                        Square(rowNumber, columnNumber, squareSize, board)
                     }
                 }
             }
@@ -67,11 +57,11 @@ fun BoardWidget(
 @Composable
 private fun Square(
     rowNumber: Int,
-    columnIndex: Int,
+    columnNumber: Int,
     squareSize: Dp,
     board: Board
 ) {
-    val isWhite = (rowNumber + columnIndex) % 2 == 1
+    val isWhite = (rowNumber + columnNumber) % 2 == 1
     val squareColor = if (isWhite) {
         LocalCustomColors.current.whiteSquare
     } else {
@@ -89,7 +79,16 @@ private fun Square(
             .size(squareSize)
             .background(squareColor)
     ) {
-        val piece = board.getPiece(rowNumber, columnIndex)
+        if (columnNumber == 0) {
+            val label = (rowNumber + 1).toString()
+            SquareLabel(label, labelColor, Alignment.Companion.TopStart)
+        }
+        if (rowNumber == 0) {
+            val label = (Char(97) + columnNumber).toString() // 97 = 'a'
+            SquareLabel(label, labelColor, Alignment.Companion.BottomEnd)
+        }
+
+        val piece = board.getPiece(rowNumber, columnNumber)
 
         piece?.let { piece ->
             Image(
@@ -97,17 +96,9 @@ private fun Square(
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(4.dp),
+                    .fillMaxSize()
+                    .padding(squareSize * 0.1f),
             )
-        }
-
-        if (columnIndex == 0) {
-            val label = (rowNumber + 1).toString()
-            SquareLabel(label, labelColor, Alignment.Companion.TopStart)
-        }
-        if (rowNumber == 0) {
-            val label = (Char(97) + columnIndex).toString() // 97 = 'a'
-            SquareLabel(label, labelColor, Alignment.Companion.BottomEnd)
         }
     }
 }
@@ -121,9 +112,16 @@ private fun BoxScope.SquareLabel(
     Text(
         text = label,
         modifier = Modifier.Companion
-            .padding(4.dp)
+            .padding(2.dp)
             .align(alignment),
-        style = MaterialTheme.typography.bodySmall,
+        style = MaterialTheme.typography.bodySmall.copy(
+            fontSize = 12.sp / LocalDensity.current.fontScale, // prevent font from scaling
+            lineHeight = 1.em,
+            lineHeightStyle = LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.Both
+            )
+        ),
         color = color,
     )
 }
@@ -131,9 +129,9 @@ private fun BoxScope.SquareLabel(
 @Preview
 @Composable
 private fun BoardPreview() {
-    val board = Board(8)
-    board.setPiece(WhiteQueen, 2, 2)
-    board.setPiece(BlackQueen, 5, 2)
+    val board = Board(6)
+    board.setPiece(WhiteQueen, 0, 0)
+    board.setPiece(BlackQueen, 5, 0)
     board.setPiece(WhiteQueen, 2, 5)
     board.setPiece(BlackQueen, 5, 5)
 
