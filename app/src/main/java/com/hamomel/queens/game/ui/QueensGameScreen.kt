@@ -18,22 +18,22 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun QueensGameScreen(
-    boardSize: Int
-) {
+fun QueensGameScreen(boardSize: Int) {
     val viewModel = koinViewModel<QueensGameViewModel> { parametersOf(boardSize) }
     val viewState by viewModel.viewState.collectAsState()
 
     QueensGameContent(
         state = viewState,
-        onSquareClick = viewModel::onSquareClick
+        onSquareClick = viewModel::onSquareClick,
+        onConflictsShown = viewModel::onConflictsShown
     )
 }
 
 @Composable
 private fun QueensGameContent(
     state: QueensGameViewState,
-    onSquareClick: (Position) -> Unit
+    onSquareClick: (Position) -> Unit,
+    onConflictsShown: () -> Unit,
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -43,8 +43,10 @@ private fun QueensGameContent(
         ) {
             BoardWidget(
                 board = state.board,
+                conflicts = state.conflicts,
                 modifier = Modifier.align(Alignment.Center),
-                onSquareClick = onSquareClick
+                onSquareClick = onSquareClick,
+                onConflictsShown = onConflictsShown
             )
         }
     }
@@ -54,6 +56,10 @@ private fun QueensGameContent(
 @Preview
 private fun QueensGamePreview() {
     QueensTheme {
-        QueensGameContent(QueensGameViewState(board = Board(8)), {})
+        QueensGameContent(
+            state = QueensGameViewState(board = Board(8)),
+            onSquareClick = {},
+            onConflictsShown = {}
+        )
     }
 }

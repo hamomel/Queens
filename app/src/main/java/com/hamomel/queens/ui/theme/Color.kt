@@ -7,13 +7,16 @@ val Background = Color(81, 80, 86)
 val WhiteSquare = Color(238, 238, 210)
 val BlackSquare = Color(117, 150, 86)
 val Accent = Color(33, 169, 75)
+val Error = Color(255, 0, 0)
 
 data class QueensColorScheme(
     val whiteSquare: Color,
-    val blackSquare: Color
+    val blackSquare: Color,
+    val error: Color
 )
 
 val lightQueensColorScheme = QueensColorScheme(
     whiteSquare = WhiteSquare,
-    blackSquare = BlackSquare
+    blackSquare = BlackSquare,
+    error = Error
 )

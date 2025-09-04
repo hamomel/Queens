@@ -5,5 +5,6 @@ import com.hamomel.queens.data.Position
 
 data class QueensGameViewState(
     val board: Board,
-    val conflicts: List<Position> = emptyList()
+    @Suppress("ArrayInDataClass") // I intentionally use array so that it is compared by reference
+    val conflicts: Array<Position> = emptyArray()
 )

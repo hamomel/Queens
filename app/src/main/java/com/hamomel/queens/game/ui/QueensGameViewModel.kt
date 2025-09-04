@@ -19,7 +19,7 @@ class QueensGameViewModel(
         if (pieceOnPosition == null) {
             trySetQueen(position)
         } else {
-            mutateState { it.board.removePiece(position) }
+            mutateState { it.apply { board.removePiece(position) }}
         }
     }
 
@@ -27,10 +27,17 @@ class QueensGameViewModel(
         val conflicts = findConflicts(_viewState.value.board, position)
 
         if (conflicts.isNotEmpty()) {
-            mutateState { it.copy(conflicts = conflicts) }
+            mutateState { it.copy(conflicts = conflicts.toTypedArray()) }
         } else {
-            mutateState { it.board.setPiece(WhiteQueen, position) }
+            mutateState { state ->
+                state.apply { board.setPiece(WhiteQueen, position) }
+                state.copy(conflicts = emptyArray())
+            }
         }
+    }
+
+    fun onConflictsShown() {
+        mutateState { it.copy(conflicts = emptyArray()) }
     }
 
     private fun findConflicts(board: Board, position: Position): List<Position> {
@@ -73,9 +80,8 @@ class QueensGameViewModel(
         return conflicts
     }
 
-    private fun mutateState(mutation: (QueensGameViewState) -> Unit) {
+    private fun mutateState(mutation: (QueensGameViewState) -> QueensGameViewState) {
         val currentState = _viewState.value
-        mutation(currentState)
-        _viewState.value = currentState
+        _viewState.value = mutation(currentState)
     }
 }

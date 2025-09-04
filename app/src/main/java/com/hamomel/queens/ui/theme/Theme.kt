@@ -30,7 +30,6 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun QueensTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(

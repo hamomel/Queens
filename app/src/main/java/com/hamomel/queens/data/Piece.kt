@@ -2,11 +2,10 @@ package com.hamomel.queens.data
 
 import androidx.annotation.DrawableRes
 import com.hamomel.queens.R
-import androidx.compose.runtime.Immutable
 
 sealed class Piece(
     open val color: PieceColor,
-    @DrawableRes val iconRes: Int
+    @param:DrawableRes val iconRes: Int
 )
 
 data object WhiteQueen : Piece(PieceColor.WHITE,R.drawable.piece_queen_white)
