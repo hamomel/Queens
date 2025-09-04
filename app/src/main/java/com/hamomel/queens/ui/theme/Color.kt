@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Color
 
 
 val Background = Color(81, 80, 86)
+val Surface = Color(42, 41, 38)
+val OnSurface = Color(194, 194, 194)
 val WhiteSquare = Color(238, 238, 210)
 val BlackSquare = Color(117, 150, 86)
 val Accent = Color(33, 169, 75)

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class QueensGameViewModel(
-    boardSize: Int
+    private val boardSize: Int
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(QueensGameViewState(board = Board(boardSize)))
     val viewState: StateFlow<QueensGameViewState> = _viewState.asStateFlow()
@@ -34,6 +34,10 @@ class QueensGameViewModel(
                 state.copy(conflicts = emptyArray())
             }
         }
+    }
+
+    fun onResetClick() {
+        mutateState { it.copy(board = Board(boardSize), conflicts = emptyArray()) }
     }
 
     fun onConflictsShown() {

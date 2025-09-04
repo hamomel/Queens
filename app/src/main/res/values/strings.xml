@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Queens</string>
+    <string name="reset_game_button_label">Reset Game</string>
+    <string name="game_screen_title">%s Queens</string>
 </resources>
