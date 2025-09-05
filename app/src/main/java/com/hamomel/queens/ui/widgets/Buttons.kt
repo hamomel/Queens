@@ -1,5 +1,6 @@
 package com.hamomel.queens.ui.widgets
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
@@ -23,8 +24,9 @@ fun QueensButtonLarge(
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
+            .sizeIn(minWidth = 300.dp, maxWidth = 400.dp)
+            .fillMaxWidth()
             .height(50.dp)
-            .sizeIn(minWidth = 300.dp)
             .padding(horizontal = 32.dp)
     ) {
         Text(

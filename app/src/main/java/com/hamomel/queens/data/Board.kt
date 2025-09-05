@@ -33,4 +33,8 @@ data class Board(
 
     private fun isOnBoard(position: Position) =
         position.line >= 0 && position.line <= size && position.column >= 0 && position.column <= size
+
+    companion object {
+        const val  DEFAULT_SIZE = 8
+    }
 }

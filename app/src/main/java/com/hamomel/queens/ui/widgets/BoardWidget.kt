@@ -73,7 +73,7 @@ fun BoardWidget(
                         val isConflict =
                             conflicts.any { it.line == rowNumber && it.column == columnNumber }
                         val squareColor = getSquareColor(isWhite)
-                        var animatedSquareColor by remember { mutableStateOf(squareColor) }
+                        var animatedSquareColor by remember(board.size) { mutableStateOf(squareColor) }
 
                         if (isConflict) {
                             val errorColor = LocalCustomColors.current.error
@@ -207,7 +207,7 @@ private fun BoxScope.SquareLabel(
 @Preview
 @Composable
 private fun BoardPreview() {
-    val board = Board(8)
+    val board = Board(11)
     board.setPiece(WhiteQueen, Position(0, 0))
     board.setPiece(BlackQueen, Position(5, 0))
     board.setPiece(WhiteQueen, Position(2, 5))

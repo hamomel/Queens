@@ -4,19 +4,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,19 +29,44 @@ import com.hamomel.queens.data.Position
 import com.hamomel.queens.ui.theme.QueensTheme
 import com.hamomel.queens.ui.widgets.BoardWidget
 import com.hamomel.queens.ui.widgets.QueensButtonLarge
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
+
+@Serializable
+object GameRoute
 
 @Composable
-fun QueensGameScreen(boardSize: Int) {
-    val viewModel = koinViewModel<QueensGameViewModel> { parametersOf(boardSize) }
+fun QueensGameScreen(
+    boardSize: StateFlow<Int>,
+    onChoseBoardSizeNavigate: (Int) -> Unit,
+    viewModel: QueensGameViewModel = koinViewModel()
+) {
+
+    LaunchedEffect(Unit) {
+        boardSize.collect { size ->
+            viewModel.onBoardSizeChanged(size)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvents.collect { event ->
+            when (event) {
+                is QueensGameNavigationEvent.ChooseBoardSize -> {
+                    onChoseBoardSizeNavigate(event.currentSize)
+                }
+            }
+        }
+    }
+
     val viewState by viewModel.viewState.collectAsState()
 
     QueensGameContent(
         state = viewState,
         onSquareClick = viewModel::onSquareClick,
         onResetClick = viewModel::onResetClick,
-        onConflictsShown = viewModel::onConflictsShown
+        onConflictsShown = viewModel::onConflictsShown,
+        onChooseBoardSizeClick = { viewModel.onChooseBoardSizeClick() }
     )
 }
 
@@ -47,18 +75,29 @@ fun QueensGameScreen(boardSize: Int) {
 private fun QueensGameContent(
     state: QueensGameViewState,
     onSquareClick: (Position) -> Unit,
-    onResetClick: () -> Unit ,
+    onResetClick: () -> Unit,
     onConflictsShown: () -> Unit,
+    onChooseBoardSizeClick: () -> Unit = { }
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                Text(
-                    text = stringResource(R.string.game_screen_title, state.board.size),
-                    style = MaterialTheme.typography.titleLarge
-                )
-            })
+                    Text(
+                        text = stringResource(R.string.game_screen_title, state.board.size),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                actions = {
+                    IconButton(onClick = onChooseBoardSizeClick) {
+                        Icon(
+                            painter = painterResource(R.drawable.icon_chess_board),
+                            contentDescription = stringResource(R.string.choose_board_size_button_content_description),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            )
         }
     ) { paddingValues ->
         Column(
@@ -68,23 +107,26 @@ private fun QueensGameContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            Spacer(Modifier.height(64.dp))
+
             BoardWidget(
                 board = state.board,
                 conflicts = state.conflicts,
-                modifier = Modifier,
+                modifier = Modifier.weight(1f),
                 onSquareClick = onSquareClick,
                 onConflictsShown = onConflictsShown
             )
 
-            Spacer(Modifier.height(64.dp))
+            Spacer(Modifier.height(16.dp))
 
             QueensButtonLarge(
                 onClick = onResetClick,
                 text = stringResource(R.string.reset_game_button_label),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth()
             )
+
+            Spacer(Modifier.height(32.dp))
         }
     }
 }
