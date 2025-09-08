@@ -1,5 +1,6 @@
 package com.hamomel.queens.game
 
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,11 +46,17 @@ class QueensGameViewModel(
         val conflicts = findConflicts(_viewState.value.board, position)
 
         if (conflicts.isNotEmpty()) {
-            mutateState { it.copy(conflicts = conflicts.toTypedArray()) }
+            mutateState { it.copy(
+                conflicts = conflicts.toTypedArray(),
+                hapticFeedbackType = HapticFeedbackType.Reject
+            ) }
         } else {
             mutateState { state ->
                 state.apply { board.setPiece(WhiteQueen, position) }
-                state.copy(conflicts = emptyArray())
+                state.copy(
+                    conflicts = emptyArray(),
+                    hapticFeedbackType = HapticFeedbackType.Confirm
+                )
             }
             checkWinCondition()
         }
@@ -79,6 +86,10 @@ class QueensGameViewModel(
 
     fun onConflictsShown() {
         mutateState { it.copy(conflicts = emptyArray()) }
+    }
+
+    fun onHapticFeedbackConsumed() {
+        mutateState { it.copy(hapticFeedbackType = null) }
     }
 
     fun onChooseBoardSizeClick() {

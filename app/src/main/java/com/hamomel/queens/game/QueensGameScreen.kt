@@ -43,6 +43,7 @@ fun QueensGameScreen(
     onWinNavigate: (Int) -> Unit,
     viewModel: QueensGameViewModel = koinViewModel()
 ) {
+    val viewState by viewModel.viewState.collectAsState()
 
     LaunchedEffect(Unit) {
         boardSize.collect { size ->
@@ -59,7 +60,12 @@ fun QueensGameScreen(
         }
     }
 
-    val viewState by viewModel.viewState.collectAsState()
+    val hapticFeedbackType = viewState.hapticFeedbackType
+    if (hapticFeedbackType != null) {
+        val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
+        haptic.performHapticFeedback(hapticFeedbackType)
+        viewModel.onHapticFeedbackConsumed()
+    }
 
     QueensGameContent(
         state = viewState,

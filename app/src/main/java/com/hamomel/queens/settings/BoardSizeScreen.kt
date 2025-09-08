@@ -29,6 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,7 +72,7 @@ fun BoardSizeScreen(
             )
         }
     ) { paddingValues ->
-
+        val haptic = LocalHapticFeedback.current
         var size by remember { mutableIntStateOf(currentSize) }
 
         Column(
@@ -93,7 +95,10 @@ fun BoardSizeScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 IconButton(
-                    onClick = { size = (size - 1).coerceAtLeast(minSize) },
+                    onClick = {
+                        size = (size - 1).coerceAtLeast(minSize)
+                        haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                    },
                     enabled = size > minSize
                 ) {
                     Icon(
@@ -115,7 +120,10 @@ fun BoardSizeScreen(
                 Spacer(modifier = Modifier.size(32.dp))
 
                 IconButton(
-                    onClick = { size = (size + 1).coerceAtMost(maxSize) },
+                    onClick = {
+                        size = (size + 1).coerceAtMost(maxSize)
+                        haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                    },
                     enabled = size < maxSize
                 ) {
                     Icon(
