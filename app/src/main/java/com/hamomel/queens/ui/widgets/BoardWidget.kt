@@ -64,7 +64,8 @@ fun BoardWidget(
 
         Column {
             repeat(board.size) { rowIndex ->
-                val rowNumber = board.size - rowIndex - 1 // start  rows count from 0, for better compatibility
+                val rowNumber =
+                    board.size - rowIndex - 1 // start  rows count from 0, for better compatibility
 
                 Row {
                     repeat(board.size) { columnNumber ->
@@ -103,9 +104,9 @@ fun BoardWidget(
                             size = squareSize,
                             color = animatedSquareColor,
                             piece = board.getPiece(Position(rowNumber, columnNumber)),
-                            label = getLabel(columnNumber, rowNumber),
+                            leftLabel = getLeftLabel(columnNumber, rowNumber),
+                            bottomLabel = getBottomLabel(columnNumber, rowNumber),
                             labelColor = getLabelColor(isWhite),
-                            labelAlignment = getLabelAlignment(columnNumber, rowNumber),
                             onClick = { onSquareClick(Position(rowNumber, columnNumber)) }
                         )
                     }
@@ -115,18 +116,20 @@ fun BoardWidget(
     }
 }
 
-@Composable
-private fun getLabel(columnNumber: Int, rowNumber: Int): String? = when {
-    columnNumber == 0 -> (rowNumber + 1).toString()
-    rowNumber == 0 -> (Char(97) + columnNumber).toString() // 97 = 'a'
-    else -> null
-}
 
-private fun getLabelAlignment(columnNumber: Int, rowNumber: Int): Alignment = when {
-    columnNumber == 0 -> Alignment.TopStart
-    rowNumber == 0 -> Alignment.BottomEnd
-    else -> Alignment.TopStart
-}
+private fun getLeftLabel(columnNumber: Int, rowNumber: Int): String? =
+    if (columnNumber == 0) {
+        (rowNumber + 1).toString()
+    } else {
+        null
+    }
+
+fun getBottomLabel(columnNumber: Int, rowNumber: Int): String? =
+    if (rowNumber == 0) {
+        (Char(97) + columnNumber).toString() // 97 = 'a'
+    } else {
+        null
+    }
 
 @Composable
 private fun getLabelColor(isWhite: Boolean): Color = if (isWhite) {
@@ -149,9 +152,9 @@ private fun Square(
     color: Color,
     piece: Piece? = null,
     pieceTint: Color? = null,
-    label: String? = null,
+    leftLabel: String? = null,
+    bottomLabel: String? = null,
     labelColor: Color = LocalCustomColors.current.blackSquare,
-    labelAlignment: Alignment = Alignment.TopStart,
     onClick: () -> Unit
 ) {
     CompositionLocalProvider(
@@ -163,8 +166,11 @@ private fun Square(
                 .background(color)
                 .clickable { onClick() },
         ) {
-            label?.let { label ->
-                SquareLabel(label, labelColor, labelAlignment)
+            leftLabel?.let { label ->
+                SquareLabel(label, labelColor, Alignment.TopStart)
+            }
+            bottomLabel?.let { label ->
+                SquareLabel(label, labelColor, Alignment.BottomEnd)
             }
             piece?.let { piece ->
                 Image(

@@ -81,7 +81,10 @@ class QueensGameViewModel(
     }
 
     fun onResetClick() {
-        mutateState { QueensGameViewState(board = Board(boardSize)) }
+        mutateState { QueensGameViewState(
+            board = Board(boardSize),
+            hapticFeedbackType = HapticFeedbackType.LongPress
+        ) }
     }
 
     fun onConflictsShown() {
