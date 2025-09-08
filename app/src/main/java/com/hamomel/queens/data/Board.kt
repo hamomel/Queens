@@ -31,6 +31,22 @@ data class Board(
         board[position.line][position.column] = null
     }
 
+    fun getAllPieces(): List<PieceWithPosition> {
+        val pieces = mutableListOf<PieceWithPosition>()
+
+        for (line in 0 until size) {
+            for (column in 0 until size) {
+                val piece = board[line][column]
+                if (piece != null) {
+                    val pieceWithPosition = PieceWithPosition(piece, Position(line, column))
+                    pieces.add(pieceWithPosition)
+                }
+            }
+        }
+
+        return pieces
+    }
+
     private fun isOnBoard(position: Position) =
         position.line >= 0 && position.line <= size && position.column >= 0 && position.column <= size
 

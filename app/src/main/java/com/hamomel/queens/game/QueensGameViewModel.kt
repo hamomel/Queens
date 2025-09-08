@@ -1,4 +1,4 @@
-package com.hamomel.queens.game.ui
+package com.hamomel.queens.game
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -30,7 +30,10 @@ class QueensGameViewModel(
     val navigationEvents: Flow<QueensGameNavigationEvent> = _navigationEvents
 
     fun onSquareClick(position: Position) {
+        if (_viewState.value.isWin) return
+
         val pieceOnPosition = _viewState.value.board.getPiece(position)
+
         if (pieceOnPosition == null) {
             trySetQueen(position)
         } else {
@@ -48,6 +51,18 @@ class QueensGameViewModel(
                 state.apply { board.setPiece(WhiteQueen, position) }
                 state.copy(conflicts = emptyArray())
             }
+            checkWinCondition()
+        }
+    }
+
+    private fun checkWinCondition() {
+        val currentState = _viewState.value
+        val allPieces = currentState.board.getAllPieces()
+
+        if (allPieces.size == currentState.board.size) {
+            viewModelScope.launch {
+                _navigationEvents.emit(QueensGameNavigationEvent.Win(currentState.board.size))
+            }
         }
     }
 
@@ -59,8 +74,7 @@ class QueensGameViewModel(
     }
 
     fun onResetClick() {
-        val boardSize = _viewState.value.board.size + 1
-        mutateState { it.copy(board = Board(boardSize), conflicts = emptyArray()) }
+        mutateState { QueensGameViewState(board = Board(boardSize)) }
     }
 
     fun onConflictsShown() {

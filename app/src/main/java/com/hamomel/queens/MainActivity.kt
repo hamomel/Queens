@@ -15,11 +15,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.hamomel.queens.data.Board
-import com.hamomel.queens.game.ui.GameRoute
-import com.hamomel.queens.game.ui.QueensGameScreen
+import com.hamomel.queens.game.GameRoute
+import com.hamomel.queens.game.QueensGameScreen
 import com.hamomel.queens.settings.BoardSizeRoute
 import com.hamomel.queens.settings.BoardSizeScreen
 import com.hamomel.queens.ui.theme.QueensTheme
+import com.hamomel.queens.winscreeen.WinRoute
+import com.hamomel.queens.winscreeen.WinScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MainActivity : ComponentActivity() {
@@ -47,6 +49,9 @@ class MainActivity : ComponentActivity() {
                             boardSize = boardSize,
                             onChoseBoardSizeNavigate = { currentSize ->
                                 navController.navigate(BoardSizeRoute(currentSize))
+                            },
+                            onWinNavigate = { boardSize ->
+                                navController.navigate(WinRoute(boardSize))
                             }
                         )
                     }
@@ -62,6 +67,13 @@ class MainActivity : ComponentActivity() {
                                 )
                                 navController.popBackStack()
                             },
+                            onClose = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable<WinRoute>() { backStackEntry ->
+                        WinScreen(
+                            boardSize = backStackEntry.toRoute<WinRoute>().boardSize,
                             onClose = { navController.popBackStack() }
                         )
                     }

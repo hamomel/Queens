@@ -1,4 +1,4 @@
-package com.hamomel.queens.game.ui
+package com.hamomel.queens.game
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +40,7 @@ object GameRoute
 fun QueensGameScreen(
     boardSize: StateFlow<Int>,
     onChoseBoardSizeNavigate: (Int) -> Unit,
+    onWinNavigate: (Int) -> Unit,
     viewModel: QueensGameViewModel = koinViewModel()
 ) {
 
@@ -52,9 +53,8 @@ fun QueensGameScreen(
     LaunchedEffect(Unit) {
         viewModel.navigationEvents.collect { event ->
             when (event) {
-                is QueensGameNavigationEvent.ChooseBoardSize -> {
-                    onChoseBoardSizeNavigate(event.currentSize)
-                }
+                is QueensGameNavigationEvent.ChooseBoardSize -> onChoseBoardSizeNavigate(event.currentSize)
+                is QueensGameNavigationEvent.Win -> onWinNavigate(event.boardSize)
             }
         }
     }
@@ -121,7 +121,11 @@ private fun QueensGameContent(
 
             QueensButtonLarge(
                 onClick = onResetClick,
-                text = stringResource(R.string.reset_game_button_label),
+                text = if (state.isWin) {
+                    stringResource(R.string.game_new_game)
+                } else {
+                    stringResource(R.string.reset_game_button_label)
+                },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
             )

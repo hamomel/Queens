@@ -7,4 +7,7 @@
     <string name="board_size_play_button_title">Play</string>
     <string name="board_size_make_smaller_button_content_description">Make the board smaller</string>
     <string name="board_size_make_larger_button_content_description">Make the board larger</string>
+    <string name="game_new_game">New game</string>
+    <string name="win_congratulations">Congratulations!</string>
+    <string name="win_success_message">You have successfully placed %1$d queens on the board without any conflicts!</string>
 </resources>
