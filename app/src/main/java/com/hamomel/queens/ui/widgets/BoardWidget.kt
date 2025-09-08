@@ -53,7 +53,7 @@ import kotlinx.coroutines.CancellationException
 fun BoardWidget(
     board: Board,
     conflicts: Array<Position>,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onSquareClick: (Position) -> Unit,
     onConflictsShown: () -> Unit,
 ) {

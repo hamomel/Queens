@@ -98,7 +98,7 @@ private fun QueensGameContent(
                     IconButton(onClick = onChooseBoardSizeClick) {
                         Icon(
                             painter = painterResource(R.drawable.icon_chess_board),
-                            contentDescription = stringResource(R.string.choose_board_size_button_content_description),
+                            contentDescription = stringResource(R.string.game_choose_board_size_button_content_description),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -113,24 +113,39 @@ private fun QueensGameContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            val countToWinText = if (state.isWin) {
+                stringResource(R.string.game_win_message)
+            } else {
+                (state.board.size - state.board.getAllPieces().size).toString()
+            }
+
+            Text(
+                text = countToWinText,
+                style = MaterialTheme.typography.headlineLarge
+            )
+
+            Text(
+                text = if (!state.isWin) stringResource(R.string.game_queens_to_win) else "",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
             Spacer(Modifier.height(64.dp))
 
             BoardWidget(
                 board = state.board,
                 conflicts = state.conflicts,
-                modifier = Modifier.weight(1f),
                 onSquareClick = onSquareClick,
                 onConflictsShown = onConflictsShown
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(64.dp))
 
             QueensButtonLarge(
                 onClick = onResetClick,
                 text = if (state.isWin) {
                     stringResource(R.string.game_new_game)
                 } else {
-                    stringResource(R.string.reset_game_button_label)
+                    stringResource(R.string.game_reset_game_button_label)
                 },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
