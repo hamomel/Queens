@@ -9,7 +9,5 @@ data class QueensGameViewState(
     @Suppress("ArrayInDataClass") // I intentionally use array so that it is compared by reference
     val conflicts: Array<Position> = emptyArray(),
     val hapticFeedbackType: HapticFeedbackType? = null,
-) {
-    val isWin: Boolean
-        get() = board.getAllPieces().size == board.size
-}
+    val isWin: Boolean = false,
+)
