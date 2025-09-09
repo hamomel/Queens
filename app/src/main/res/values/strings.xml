@@ -7,6 +7,7 @@
     <string name="game_queens_to_win">Queens to win</string>
     <string name="game_win_message">Win!</string>
     <string name="close_button_content_description">Close</string>
+    <string name="board_size_screen_title">Choose Board Size</string>
     <string name="board_size_play_button_title">Play</string>
     <string name="board_size_make_smaller_button_content_description">Make the board smaller</string>
     <string name="board_size_make_larger_button_content_description">Make the board larger</string>

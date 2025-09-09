@@ -85,7 +85,7 @@ fun BoardSizeScreen(
             Spacer(modifier = Modifier.height(64.dp))
 
             Text(
-                text = "Choose Board Size",
+                text = stringResource(R.string.board_size_screen_title),
                 style = MaterialTheme.typography.headlineMedium
             )
 
