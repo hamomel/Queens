@@ -3,7 +3,7 @@
     <string name="game_reset_game_button_label">Reset Game</string>
     <string name="game_screen_title">%s Queens</string>
     <string name="game_choose_board_size_button_content_description">Choose board size</string>
-    <string name="game_new_game">New game</string>
+    <string name="game_new_game_button_label">New Game</string>
     <string name="game_queens_to_win">Queens to win</string>
     <string name="game_win_message">Win!</string>
     <string name="close_button_content_description">Close</string>

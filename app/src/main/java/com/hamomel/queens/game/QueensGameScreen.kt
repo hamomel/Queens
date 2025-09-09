@@ -1,5 +1,6 @@
 package com.hamomel.queens.game
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -122,7 +124,8 @@ private fun QueensGameContent(
 
             Text(
                 text = countToWinText,
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.testTag(QueensGameScreenTestTags.COUNT_TO_WIN_TEXT)
             )
 
             Text(
@@ -135,7 +138,8 @@ private fun QueensGameContent(
             BoardWidget(
                 board = state.board,
                 conflicts = state.conflicts,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
+                    .testTag(QueensGameScreenTestTags.BOARD),
                 onSquareClick = onSquareClick,
                 onConflictsShown = onConflictsShown
             )
@@ -145,7 +149,7 @@ private fun QueensGameContent(
             QueensButtonLarge(
                 onClick = onResetClick,
                 text = if (state.isWin) {
-                    stringResource(R.string.game_new_game)
+                    stringResource(R.string.game_new_game_button_label)
                 } else {
                     stringResource(R.string.game_reset_game_button_label)
                 },
@@ -168,4 +172,10 @@ private fun QueensGamePreview() {
             onConflictsShown = {}
         )
     }
+}
+
+@VisibleForTesting
+object QueensGameScreenTestTags {
+    const val BOARD = "BOARD"
+    const val COUNT_TO_WIN_TEXT = "COUNT_TO_WIN_TEXT"
 }
