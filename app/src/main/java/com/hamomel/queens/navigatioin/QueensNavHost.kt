@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 fun QueensNavHost(navController: NavHostController) {
     NavHost(navController, startDestination = GameRoute) {
-        composable<GameRoute>() {
+        composable<GameRoute> {
             val boardSize = navController.currentBackStackEntry
                 ?.savedStateHandle
                 ?.getStateFlow(BoardSizeRoute.Companion.RESULT_KEY, Board.Companion.DEFAULT_SIZE)
@@ -35,7 +35,7 @@ fun QueensNavHost(navController: NavHostController) {
             )
         }
 
-        composable<BoardSizeRoute>() { backStackEntry ->
+        composable<BoardSizeRoute> { backStackEntry ->
             BoardSizeScreen(
                 currentSize = backStackEntry.toRoute<BoardSizeRoute>().currentSize,
                 maxSize = BoardSizeUtils.calculateMaxBoardSize(),
@@ -50,7 +50,7 @@ fun QueensNavHost(navController: NavHostController) {
             )
         }
 
-        composable<WinRoute>() { backStackEntry ->
+        composable<WinRoute> { backStackEntry ->
             WinScreen(
                 boardSize = backStackEntry.toRoute<WinRoute>().boardSize,
                 onClose = { navController.popBackStack() }

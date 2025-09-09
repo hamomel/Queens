@@ -1,6 +1,6 @@
 package com.hamomel.queens.ui.widgets
 
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -86,7 +86,7 @@ fun BoardWidget(
                                         targetValue = 1f,
                                         animationSpec = tween(
                                             durationMillis = 2000,
-                                            easing = LinearEasing
+                                            easing = FastOutSlowInEasing
                                         )
                                     ) { value, _ ->
                                         animatedSquareColor =
