@@ -115,13 +115,28 @@ class GameEngineTest {
     }
 
     @Test
-    fun `isWin returns true when pieces equal board size`() {
-        // Place 8 queens on an 8x8 board
+    fun `isWin returns true when pieces equal board size and no conflicts`() {
+        // Place 8 queens in a valid solution for 8x8 board
+        board.setPiece(WhiteQueen, Position(0, 0))
+        board.setPiece(WhiteQueen, Position(1, 4))
+        board.setPiece(WhiteQueen, Position(2, 7))
+        board.setPiece(WhiteQueen, Position(3, 5))
+        board.setPiece(WhiteQueen, Position(4, 2))
+        board.setPiece(WhiteQueen, Position(5, 6))
+        board.setPiece(WhiteQueen, Position(6, 1))
+        board.setPiece(WhiteQueen, Position(7, 3))
+
+        assertTrue(gameEngine.isWin(board))
+    }
+
+    @Test
+    fun `isWin returns false when pieces equal board size but have conflicts`() {
+        // Place 8 queens on diagonal (all conflict with each other)
         for (i in 0 until 8) {
             board.setPiece(WhiteQueen, Position(i, i))
         }
 
-        assertTrue(gameEngine.isWin(board))
+        assertFalse(gameEngine.isWin(board))
     }
 
     @Test
@@ -130,10 +145,11 @@ class GameEngineTest {
 
         assertFalse(gameEngine.isWin(smallBoard))
 
-        // Place 4 queens
-        for (i in 0 until 4) {
-            smallBoard.setPiece(WhiteQueen, Position(i, i))
-        }
+        // Place 4 queens in a valid solution for 4x4 board
+        smallBoard.setPiece(WhiteQueen, Position(0, 1))
+        smallBoard.setPiece(WhiteQueen, Position(1, 3))
+        smallBoard.setPiece(WhiteQueen, Position(2, 0))
+        smallBoard.setPiece(WhiteQueen, Position(3, 2))
 
         assertTrue(gameEngine.isWin(smallBoard))
     }

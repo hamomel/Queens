@@ -45,6 +45,13 @@ class GameEngine {
     }
 
     fun isWin(board: Board): Boolean {
-        return board.getAllPieces().size == board.size
+        val pieces = board.getAllPieces()
+        for (piece in pieces) {
+            val conflicts = findConflicts(board, piece.position)
+            if (conflicts.isNotEmpty()) {
+                return false
+            }
+        }
+        return pieces.size == board.size
     }
 }
