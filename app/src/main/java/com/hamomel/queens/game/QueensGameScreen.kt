@@ -112,6 +112,7 @@ private fun QueensGameContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(vertical = 32.dp)
         ) {
             val countToWinText = if (state.isWin) {
                 stringResource(R.string.game_win_message)
@@ -129,16 +130,17 @@ private fun QueensGameContent(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            Spacer(Modifier.height(64.dp))
+            Spacer(Modifier.height(16.dp))
 
             BoardWidget(
                 board = state.board,
                 conflicts = state.conflicts,
+                modifier = Modifier.weight(1f),
                 onSquareClick = onSquareClick,
                 onConflictsShown = onConflictsShown
             )
 
-            Spacer(Modifier.height(64.dp))
+            Spacer(Modifier.height(16.dp))
 
             QueensButtonLarge(
                 onClick = onResetClick,
@@ -150,8 +152,6 @@ private fun QueensGameContent(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
             )
-
-            Spacer(Modifier.height(32.dp))
         }
     }
 }
