@@ -1,4 +1,4 @@
-package com.hamomel.queens.game.di
+package com.hamomel.queens.di
 
 import androidx.lifecycle.SavedStateHandle
 import com.hamomel.queens.appModule
