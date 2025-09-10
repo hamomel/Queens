@@ -27,10 +27,16 @@ There are two ways to run tests:
    - Right-click on the `app/src/androidTest` directory and select "Run 'All Tests'" to run UI tests.
 2. Using Gradle from the command line:
 
-```bash
-./gradlew testDebugUnitTest  # For unit tests
-./gradlew connectedDebugAndroidTest  # For UI tests
+For unit tests
+```shell
+./gradlew testDebugUnitTest 
+ ```
+
+For UI tests
+```shell
+./gradlew connectedDebugAndroidTest
 ```
+You will need adb and an emulator or a physical device connected to your machine to run UI tests.
 
 ## Architecture
 The application follows the MVVM architecture pattern, ensuring a clear separation of concerns and making the codebase more maintainable and testable.
